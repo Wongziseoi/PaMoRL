@@ -1,0 +1,53 @@
+Task: "JointTrainAgent"
+
+BasicSettings:
+  Seed: 0
+  ObsShape: (64, 64, 3)
+  UseAmp: False
+  FrameSkip: 2
+
+JointTrainAgent:
+  SampleMaxSteps: 101000
+  BufferMaxLength: 101000
+  BufferWarmUp: 1024
+  NumEnvs: 1
+  BatchSize: 16
+  BatchLength: 64
+  ImagineBatchSize: 16
+  ImagineContext: 64
+  ImagineHorizon: 15
+  TrainModelEverySteps: 1
+  TrainAgentEverySteps: 1
+  AgentUpdate: 1
+  SaveEverySteps: 2000
+  VideoLogStep: 2000
+
+Models:
+  Hidden: 512
+  NumBin: 255
+  MaxBin: 20
+  Act: "SiLU"
+  Stoch: 32
+  Discrete: 32
+  Gamma: 0.997
+  Lambda: 0.95
+  Tau: 0.02
+
+  WorldModel:
+    Stem: 32
+    MinRes: 4
+    DynScale: 0.5
+    RepScale: 0.1
+    KLFree: 1.0
+    LR: 1e-4
+    Eps: 1e-8
+
+  Agent:
+    EntropyCoef: 3e-4
+    LR: 3e-5
+    Eps: 1e-5
+    MinStd: 0.1
+    MaxStd: 1.0
+    MinPer: 0.05
+    MaxPer: 0.95
+    EMADecay: 0.99
