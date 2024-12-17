@@ -230,21 +230,6 @@ class TransposeConvLayer(nn.Module):
         return x
 
 
-class RMSNorm(torch.nn.Module):
-    def __init__(self, size, eps=1e-5):
-        super().__init__()
-        self.eps = eps
-        self.weight = nn.Parameter(torch.ones(size))
-
-    def forward(self, inp):
-        x = inp.float()
-        s = x.pow(2).mean(dim=-1, keepdim=True)
-        s = torch.rsqrt(s + self.eps)
-        x = (x * s).type_as(inp)
-        x = x * self.weight
-        return x
-    
-    
 class BatchNorm1d(nn.Module):
     def __init__(self, size, eps=1e-5):
         super().__init__()
@@ -258,6 +243,22 @@ class BatchNorm1d(nn.Module):
             x = x.unflatten(0, shape)
         else:
             x = self.norm(inp)
+        return x
+
+
+class RMSNorm(nn.Module):
+    def __init__(self, size, eps=1e-5):
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(size))
+        self.eps = eps
+
+    def forward(self, inp):
+        x = inp.float()
+        s = torch.square(x)
+        s = s.mean(dim=-1, keepdim=True)
+        s = torch.rsqrt(s + self.eps)
+        x = (x * s).type_as(inp)
+        x = x * self.weight
         return x
     
 
